@@ -255,77 +255,127 @@ export const HistoricalAnalytics: React.FC = () => {
           </div>
         </div>
 
-        {/* 24-Hour Interactive Bar & Wave Visualization */}
-        <div className="h-64 flex items-end gap-1.5 pt-6 pb-2 px-1 overflow-x-auto">
-          {hourlyData.map((d) => {
-            const isSelected = d.hour === selectedHour;
+        {/* 24-Hour Interactive Bar & Wave Visualization with Y-Axis Gridlines */}
+        <div className="relative pt-6 pb-2 px-1">
+          {/* Subtle Horizontal Reference Grid Lines */}
+          <div className="absolute inset-x-2 top-8 bottom-8 flex flex-col justify-between pointer-events-none z-0">
+            <div className="border-b border-rose-500/30 flex items-center justify-between text-[10px] font-mono text-rose-400">
+              <span className="bg-slate-900/90 px-1 rounded">Corridor Saturation Capacity (3,200 veh/hr)</span>
+              <span className="border-t border-rose-500/40 w-full ml-2" />
+            </div>
+            <div className="border-b border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-500">
+              <span className="bg-slate-900/90 px-1 rounded">75% Volume (2,400 veh/hr)</span>
+              <span className="border-t border-slate-800 w-full ml-2" />
+            </div>
+            <div className="border-b border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-500">
+              <span className="bg-slate-900/90 px-1 rounded">50% Volume (1,600 veh/hr)</span>
+              <span className="border-t border-slate-800 w-full ml-2" />
+            </div>
+            <div className="border-b border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-500">
+              <span className="bg-slate-900/90 px-1 rounded">25% Volume (800 veh/hr)</span>
+              <span className="border-t border-slate-800 w-full ml-2" />
+            </div>
+          </div>
 
-            // Height calculation according to selected metric
-            let heightPct = 10;
-            let barValueLabel = '';
-            let barColor = 'bg-cyan-600/70';
+          {/* Bar Columns Container */}
+          <div className="relative z-10 flex items-end gap-1.5 h-56 overflow-x-auto pt-4">
+            {hourlyData.map((d) => {
+              const isSelected = d.hour === selectedHour;
 
-            if (selectedMetric === 'volume') {
-              const maxVol = 4000;
-              heightPct = Math.round((d.volumeVehicles / maxVol) * 100);
-              barValueLabel = `${d.volumeVehicles}`;
-              barColor = d.isPeak
-                ? isSelected
-                  ? 'bg-rose-400 shadow-lg shadow-rose-900/50'
-                  : 'bg-rose-600/80 hover:bg-rose-500'
-                : isSelected
-                ? 'bg-cyan-400 shadow-lg shadow-cyan-900/50'
-                : 'bg-cyan-700/70 hover:bg-cyan-600';
-            } else if (selectedMetric === 'delay') {
-              heightPct = Math.min(100, Math.round((d.avgDelayFixed / 100) * 100));
-              barValueLabel = `${d.avgDelayFixed}s`;
-              barColor = isSelected ? 'bg-amber-400' : 'bg-amber-600/80 hover:bg-amber-500';
-            } else if (selectedMetric === 'speed') {
-              heightPct = Math.min(100, Math.round((d.avgSpeedKmh / 55) * 100));
-              barValueLabel = `${d.avgSpeedKmh}k`;
-              barColor = d.avgSpeedKmh < 15 ? 'bg-rose-600' : d.avgSpeedKmh < 30 ? 'bg-amber-500' : 'bg-emerald-500';
-            } else if (selectedMetric === 'spillback') {
-              heightPct = Math.max(8, d.queueSpillbackRiskPct);
-              barValueLabel = `${d.queueSpillbackRiskPct}%`;
-              barColor = d.queueSpillbackRiskPct > 70 ? 'bg-rose-600' : d.queueSpillbackRiskPct > 30 ? 'bg-amber-500' : 'bg-teal-600';
-            }
+              // Height calculation in explicit pixels (range: 16px to 195px)
+              let heightPct = 10;
+              let barValueLabel = '';
+              let barColor = 'bg-cyan-600/80';
+              let glowColor = '';
 
-            return (
-              <div
-                key={d.hour}
-                onClick={() => setSelectedHour(d.hour)}
-                className={`flex-1 min-w-[32px] flex flex-col items-center cursor-pointer transition-all duration-200 group relative ${
-                  isSelected ? 'scale-105' : 'hover:opacity-90'
-                }`}
-              >
-                {/* Floating Peak Badge */}
-                {d.isPeak && (
-                  <span className="absolute -top-7 text-[9px] font-mono bg-rose-950 text-rose-300 border border-rose-800 px-1 py-0.5 rounded whitespace-nowrap shadow z-10">
-                    PEAK
-                  </span>
-                )}
+              if (selectedMetric === 'volume') {
+                const maxVol = 3800;
+                heightPct = Math.min(100, Math.max(8, (d.volumeVehicles / maxVol) * 100));
+                barValueLabel = `${d.volumeVehicles}`;
+                barColor = d.isPeak
+                  ? isSelected
+                    ? 'bg-gradient-to-t from-rose-600 to-rose-400'
+                    : 'bg-gradient-to-t from-rose-700 to-rose-500 hover:from-rose-600 hover:to-rose-400'
+                  : isSelected
+                  ? 'bg-gradient-to-t from-cyan-600 to-cyan-400'
+                  : 'bg-gradient-to-t from-cyan-800 to-cyan-600 hover:from-cyan-700 hover:to-cyan-500';
+                glowColor = d.isPeak ? 'shadow-rose-900/50' : 'shadow-cyan-900/50';
+              } else if (selectedMetric === 'delay') {
+                heightPct = Math.min(100, Math.max(8, (d.avgDelayFixed / 95) * 100));
+                barValueLabel = `${d.avgDelayFixed}s`;
+                barColor = isSelected
+                  ? 'bg-gradient-to-t from-amber-600 to-amber-400'
+                  : 'bg-gradient-to-t from-amber-700 to-amber-500 hover:from-amber-600 hover:to-amber-400';
+                glowColor = 'shadow-amber-900/50';
+              } else if (selectedMetric === 'speed') {
+                heightPct = Math.min(100, Math.max(8, (d.avgSpeedKmh / 52) * 100));
+                barValueLabel = `${d.avgSpeedKmh}k`;
+                barColor =
+                  d.avgSpeedKmh < 15
+                    ? 'bg-gradient-to-t from-rose-700 to-rose-500'
+                    : d.avgSpeedKmh < 30
+                    ? 'bg-gradient-to-t from-amber-600 to-amber-400'
+                    : 'bg-gradient-to-t from-emerald-600 to-emerald-400';
+                glowColor = 'shadow-emerald-900/50';
+              } else if (selectedMetric === 'spillback') {
+                heightPct = Math.max(8, d.queueSpillbackRiskPct);
+                barValueLabel = `${d.queueSpillbackRiskPct}%`;
+                barColor =
+                  d.queueSpillbackRiskPct > 70
+                    ? 'bg-gradient-to-t from-rose-700 to-rose-500'
+                    : d.queueSpillbackRiskPct > 30
+                    ? 'bg-gradient-to-t from-amber-600 to-amber-400'
+                    : 'bg-gradient-to-t from-teal-700 to-teal-500';
+                glowColor = 'shadow-rose-900/50';
+              }
 
-                {/* The Bar */}
+              // Explicit pixel height so the bars can never collapse
+              const barHeightPx = Math.max(16, Math.round((heightPct / 100) * 170));
+
+              return (
                 <div
-                  className={`w-full rounded-t-md transition-all duration-300 flex items-end justify-center ${barColor}`}
-                  style={{ height: `${Math.max(6, heightPct)}%` }}
-                >
-                  <span className="text-[9px] font-mono font-bold text-white mb-1 opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
-                    {barValueLabel}
-                  </span>
-                </div>
-
-                {/* Hour label */}
-                <span
-                  className={`text-[10px] font-mono mt-1.5 transition ${
-                    isSelected ? 'text-cyan-300 font-bold' : 'text-slate-400'
+                  key={d.hour}
+                  onClick={() => setSelectedHour(d.hour)}
+                  className={`flex-1 min-w-[30px] flex flex-col justify-end items-center cursor-pointer transition-all duration-200 group relative h-full ${
+                    isSelected ? 'scale-105' : 'hover:opacity-95'
                   }`}
                 >
-                  {d.label.split(':')[0]}
-                </span>
-              </div>
-            );
-          })}
+                  {/* Floating Peak Badge */}
+                  {d.isPeak && (
+                    <span className="absolute -top-3 text-[8px] font-mono font-bold bg-rose-950 text-rose-300 border border-rose-800 px-1 py-0.5 rounded whitespace-nowrap shadow-md z-20">
+                      PEAK
+                    </span>
+                  )}
+
+                  {/* Value on Hover */}
+                  <span className="text-[9px] font-mono text-cyan-300 font-bold mb-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
+                    {barValueLabel}
+                  </span>
+
+                  {/* The Rising Bar */}
+                  <div
+                    className={`w-full rounded-t-lg transition-all duration-300 flex items-start justify-center pt-1 border-t border-x border-white/20 shadow-lg ${barColor} ${
+                      isSelected ? `ring-2 ring-white/60 shadow-xl ${glowColor}` : ''
+                    }`}
+                    style={{ height: `${barHeightPx}px` }}
+                  >
+                    <span className="text-[8px] font-mono font-bold text-white/90 hidden sm:inline-block">
+                      {barValueLabel}
+                    </span>
+                  </div>
+
+                  {/* Hour label */}
+                  <span
+                    className={`text-[10px] font-mono mt-1.5 transition ${
+                      isSelected ? 'text-cyan-300 font-bold underline' : 'text-slate-400'
+                    }`}
+                  >
+                    {d.label.split(':')[0]}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Selected Hour Deep Dive & Vehicle Composition Panel */}

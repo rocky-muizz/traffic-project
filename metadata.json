@@ -1,0 +1,7 @@
+{
+  "name": "SmartFlow AI - Smart Traffic Signal Optimization",
+  "description": "AI-powered adaptive traffic signal system utilizing real-time computer vision detection, reinforcement learning adaptive timing, historical peak hour analytics, and automated urban planning reporting.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

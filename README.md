@@ -1,12 +1,12 @@
-# SmartFlow AI — Autonomous Adaptive Traffic Signal Control System
-### Final Year Project (FYP) • Intelligent Transportation Systems (ITS)
+# SmartFlow — Intelligent Adaptive Traffic Signal Optimization System
+### Research Project • Computer Vision & Dynamic Phase Optimization (Bangalore Urban Corridor)
 
 [![Node.js](https://img.shields.io/badge/Node.js-v18%2B-green.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)](https://www.typescriptlang.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-cyan.svg)](https://tailwindcss.com/)
-[![Gemini](https://img.shields.io/badge/Google%20GenAI-Gemini%203.8%20Flash-orange.svg)](https://aistudio.google.com/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE)
+[![ComputerVision](https://img.shields.io/badge/Computer%20Vision-YOLOv8%20%2B%20OpenCV-blue.svg)](https://opencv.org/)
+[![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
 ---
 
@@ -68,13 +68,6 @@ Urban traffic congestion results in severe economic losses, commuter delays, and
 - **Infrastructure Recommendations:** Geometric improvements, Transit-Signal Priority (TSP) for BMTC buses, and pedestrian refuge designs.
 - **Export Formats:** Print-to-PDF ready and raw Markdown download.
 
-### 7. 🎓 Academic FYP Architecture & Viva Kit
-- **Markov Decision Process (MDP) Formulation:**
-  - **State Space:** $s_t = [Q_N, Q_S, Q_E, Q_W, W_N, W_S, W_E, W_W, \text{Phase}(t), \text{ElapsedTime}]$
-  - **Reward Function:** $R_t = -\sum_{i} (\alpha \cdot d_{i,t} + \beta \cdot q_{i,t}) - \rho \cdot \Delta p$
-- **4-Layer System Architecture:** Hardware Perception $\rightarrow$ Computer Vision Inference $\rightarrow$ Reinforcement Learning Agent $\rightarrow$ Actuation & Reporting.
-- **Bill of Materials (BOM):** Edge deployment specs for NVIDIA Jetson Orin Nano, PoE IP cameras, and NTCIP 1202 controller relays.
-
 ---
 
 ## 🛠️ System Requirements & Prerequisites
@@ -94,46 +87,114 @@ Urban traffic congestion results in severe economic losses, commuter delays, and
 
 ---
 
-## 📦 Local Installation & Setup
+## 📦 Local Installation & Setup (Step-by-Step)
 
-### Step 1: Clone or Extract the Project
+Follow these steps to run the complete SmartFlow AI system locally on your laptop (Windows, macOS, or Linux).
+
+### Step 1: Install Node.js (Prerequisite)
+If you do not have Node.js installed:
+- **Windows / Mac:** Download and run the official installer for **Node.js LTS (v20 or v22)** from [https://nodejs.org/](https://nodejs.org/).
+- **Linux (Ubuntu/Debian):**
+  ```bash
+  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+  ```
+- Verify your installation in your terminal / Command Prompt:
+  ```bash
+  node -v   # Should output v18.0.0 or higher (e.g. v20.x or v22.x)
+  npm -v    # Should output v9.x or higher
+  ```
+
+---
+
+### Step 2: Download or Clone the Repository
+Open your terminal (Terminal on macOS/Linux, or PowerShell / Command Prompt on Windows):
 ```bash
 git clone <repository-url>
 cd smartflow-ai
 ```
+*(If you downloaded a ZIP file, extract it to a folder and `cd` into that folder in your terminal).*
 
-### Step 2: Install Dependencies
+---
+
+### Step 3: Install Project Dependencies
+Run the following command inside the project root folder:
 ```bash
 npm install
 ```
+This will automatically install all required backend and frontend packages (React 19, TypeScript, Vite, Express, Lucide icons, TailwindCSS, etc.).
 
-### Step 3: Configure Environment Variables
-Create a `.env` file in the project root directory:
+---
+
+### Step 4: Configure Environment Variables (.env)
+Create a `.env` file in the root directory:
+
+**On macOS / Linux:**
 ```bash
 cp .env.example .env
 ```
+**On Windows (PowerShell):**
+```powershell
+Copy-Item .env.example .env
+```
+**On Windows (CMD):**
+```cmd
+copy .env.example .env
+```
 
-Edit `.env` with your settings:
+Open the `.env` file in your code editor or Notepad:
 ```env
-# Optional: Google Gemini API Key for live multimodal snapshot evaluation and report generation
-# (If not provided, the system runs with its built-in fallback analytics engine)
+# Optional but recommended: Google Gemini API Key for real-time vision detection & AI municipal reports
+# Get your free key at: https://aistudio.google.com/
 GEMINI_API_KEY="your_gemini_api_key_here"
 
-# Server Port (default: 3000)
+# Server Port (default is 3000)
 PORT=3000
 ```
-> **Tip:** You can obtain a free Gemini API key from [Google AI Studio](https://aistudio.google.com/).
+> **Note:** Even if `GEMINI_API_KEY` is left blank, the application will automatically run with the built-in adaptive computer vision and traffic analytics engine without crashing.
 
-### Step 4: Run the Development Server
+---
+
+### Step 5: Start the Local Development Server
+Execute:
 ```bash
 npm run dev
 ```
+You will see output indicating that the Express backend and Vite frontend are actively running on port 3000:
+```
+Server running at http://localhost:3000
+```
 
-### Step 5: Open in Browser
-Open your browser and navigate to:
+---
+
+### Step 6: Open in Your Browser
+Open your web browser (Chrome, Edge, Firefox, or Safari) and go to:
 ```
 http://localhost:3000
 ```
+
+---
+
+### 🔧 Troubleshooting & Common Questions
+
+1. **Port 3000 is already in use:**
+   Change the port in your `.env` file to another port:
+   ```env
+   PORT=3001
+   ```
+   Then restart with `npm run dev` and open `http://localhost:3001`.
+
+2. **How to build for production?**
+   ```bash
+   npm run build
+   npm run start
+   ```
+
+3. **How does vehicle snapshot detection work?**
+   - Click on the **📸 Bangalore Snapshot Evaluator** tab.
+   - Choose any of the real Bengaluru intersection presets (Silk Board, Marathahalli ORR, Indiranagar) or click **Upload Vehicle Snapshot** to test with any real traffic photo from your laptop.
+   - The system detects vehicles, visualizes color-coded bounding boxes, calculates PCU queue demand, and recommends the optimal green split time.
+   - Click **Apply Green Split to Live Controller** to immediately see the 4-way intersection adapt!
 
 ---
 
@@ -183,8 +244,7 @@ http://localhost:3000
 │       ├── CameraFeedsPanel.tsx            # Multi-camera grid & live webcam test
 │       ├── RealTimeDashboard.tsx           # TMC operations dashboard & NEMA phase diagram
 │       ├── HistoricalAnalytics.tsx         # Diurnal curve, 7-day heatmap & ML forecasting
-│       ├── UrbanPlannerReports.tsx         # AI municipal report generator (PDF / Markdown)
-│       └── FYPArchitecture.tsx             # Academic thesis architecture & viva kit
+│       └── UrbanPlannerReports.tsx         # AI municipal report generator (PDF / Markdown)
 ```
 
 ---
@@ -210,4 +270,4 @@ $$Q^*(s, a) = \mathbb{E} \left[ R(s, a) + \gamma \max_{a'} Q^*(s', a') \right]$$
 ## 📄 License & Attribution
 
 This project is released under the **Apache License 2.0**.
-Designed and developed for academic Final Year Project (FYP) presentations, university viva defense, and smart city transportation engineering demonstrations.
+Designed and developed as an advanced software system for Computer Vision, Edge Computing, and Adaptive Urban Traffic Optimization (Bengaluru Smart City Traffic Pilot).

@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "▶ Run SmartFlow Traffic System (F5 - Opens Web Browser)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "serverReadyAction": {
+        "pattern": "Local Web Server: (http://localhost:[0-9]+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "▶ Run Terminal Algorithm Demo (PCU & Webster Math)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run demo"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Traffic System",
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run Terminal Demo",
+      "type": "npm",
+      "script": "demo",
+      "problemMatcher": []
+    }
+  ]
+}
